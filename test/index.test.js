@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { buildExpectedRecords, diffRecords, verifySignature } from "../src/index.js";
+import { buildExpectedRecords, diffRecords, verifySignature, formatMessage } from "../src/index.js";
 
 const opts = { domain: "example.com", prefix: "ts-", postfix: "" };
 
@@ -48,4 +48,18 @@ test("verifySignature: accepts valid, rejects tampered", async () => {
   assert.equal(await verifySignature(header, body, secret), true);
   assert.equal(await verifySignature(header, body + "x", secret), false);
   assert.equal(await verifySignature(null, body, secret), false);
+});
+
+test("formatMessage: null when no changes, lists records when changed", () => {
+  assert.equal(formatMessage({ create: [], update: [], remove: [] }), null);
+  const msg = formatMessage({
+    create: [{ name: "ts-nas.example.com", type: "A", content: "100.10.0.1" }],
+    update: [],
+    remove: [{ name: "ts-old.example.com", type: "A", content: "100.10.0.99" }],
+  });
+  assert.match(msg, /Tailscale DNS 同步/);
+  assert.match(msg, /新增 1/);
+  assert.match(msg, /ts-nas.example.com A 100.10.0.1/);
+  assert.match(msg, /删除 1/);
+  assert.match(msg, /ts-old.example.com A 100.10.0.99/);
 });

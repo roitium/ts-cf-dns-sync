@@ -93,6 +93,23 @@ async function cfUpsert(env, rec, existingId) {
   if (!res.ok) throw new Error(`cf upsert ${res.status}: ${await res.text()}`);
 }
 
+export function formatMessage({ create, update, remove }) {
+  const lines = [];
+  if (create.length) lines.push(`➕ 新增 ${create.length}`, ...create.map((r) => `  ${r.name} ${r.type} ${r.content}`));
+  if (update.length) lines.push(`🔄 更新 ${update.length}`, ...update.map((r) => `  ${r.name} ${r.type} ${r.content}`));
+  if (remove.length) lines.push(`➖ 删除 ${remove.length}`, ...remove.map((r) => `  ${r.name} ${r.type} ${r.content}`));
+  return lines.length ? `Tailscale DNS 同步\n${lines.join("\n")}` : null;
+}
+
+async function sendTelegram(env, text) {
+  const res = await fetch(`https://api.telegram.org/bot${env.TG_BOT_TOKEN}/sendMessage`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ chat_id: env.TG_CHAT_ID, text, disable_web_page_preview: true }),
+  });
+  if (!res.ok) throw new Error(`telegram ${res.status}: ${await res.text()}`);
+}
+
 async function sync(env) {
   const devices = await tailscaleDevices(env);
   const expected = buildExpectedRecords(devices, {
@@ -110,6 +127,9 @@ async function sync(env) {
       { method: "DELETE", headers: { Authorization: `Bearer ${env.CF_API_TOKEN}` } },
     );
     if (!res.ok) throw new Error(`cf delete ${res.status}: ${await res.text()}`);
+  }
+  if ((create.length || update.length || remove.length) && env.TG_BOT_TOKEN && env.TG_CHAT_ID) {
+    await sendTelegram(env, formatMessage({ create, update, remove }));
   }
   return { devices: devices.length, create, update, remove };
 }

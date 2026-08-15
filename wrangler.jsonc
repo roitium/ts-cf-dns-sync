@@ -3,19 +3,21 @@
   "name": "ts-cf-dns-sync",
   "main": "src/index.js",
   "compatibility_date": "2026-01-01",
-  // 敏感变量不走 vars（避免进 git），生产用 `wrangler secret put`，本地用 .dev.vars（见 .dev.vars.example）：
-  //   TAILNET               tailnet 名（如 your-tailnet）
-  //   TAILSCALE_API_KEY     Tailscale API key（login.tailscale.com/admin/settings/authkeys）
-  //   CF_API_TOKEN          Cloudflare API token（Zone.DNS edit）
-  //   CF_ZONE_ID            Cloudflare zone id
-  //   TS_WEBHOOK_SECRET     Tailscale webhook 签名密钥（admin console 创建端点时给出）
-  //   TG_BOT_TOKEN          Telegram bot token（可选，配置后变动才推送）
-  //   TG_CHAT_ID            Telegram 接收 chat id（可选）
   "vars": {
     // 记录名格式：{PREFIX}{hostname}{POSTFIX}.{DOMAIN}
     "DOMAIN": "example.com",
     "PREFIX": "ts-",
     "POSTFIX": "",
     "VERIFY_SIGNATURE": "true"
+  },
+  "secrets": {
+    "required": [
+      "TAILNET",
+      "TAILSCALE_API_KEY",
+      "CF_API_TOKEN",
+      "CF_ZONE_ID",
+      "TS_WEBHOOK_SECRET"
+    ]
+    // TG_BOT_TOKEN / TG_CHAT_ID 可选（未设置则不发 Telegram 推送）
   }
 }

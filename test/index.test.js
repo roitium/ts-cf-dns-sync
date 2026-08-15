@@ -57,7 +57,8 @@ test("formatMessage: null when no changes, lists records when changed", () => {
     update: [],
     remove: [{ name: "ts-old.example.com", type: "A", content: "100.10.0.99" }],
   });
-  assert.match(msg, /Tailscale DNS 同步/);
+  assert.match(msg, /ts-cf-dns-sync/);
+  assert.match(msg, /DNS 记录更新/);
   assert.match(msg, /新增 1/);
   assert.match(msg, /ts-nas.example.com A 100.10.0.1/);
   assert.match(msg, /删除 1/);

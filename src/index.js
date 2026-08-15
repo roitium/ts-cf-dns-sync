@@ -98,7 +98,7 @@ export function formatMessage({ create, update, remove }) {
   if (create.length) lines.push(`➕ 新增 ${create.length}`, ...create.map((r) => `  ${r.name} ${r.type} ${r.content}`));
   if (update.length) lines.push(`🔄 更新 ${update.length}`, ...update.map((r) => `  ${r.name} ${r.type} ${r.content}`));
   if (remove.length) lines.push(`➖ 删除 ${remove.length}`, ...remove.map((r) => `  ${r.name} ${r.type} ${r.content}`));
-  return lines.length ? `Tailscale DNS 同步\n${lines.join("\n")}` : null;
+  return lines.length ? `🔄 [ts-cf-dns-sync] Tailscale → Cloudflare DNS 记录更新\n${lines.join("\n")}` : null;
 }
 
 async function sendTelegram(env, text) {

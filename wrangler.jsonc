@@ -12,11 +12,11 @@
   },
   "secrets": {
     "required": [
-      "TAILNET",
-      "TAILSCALE_API_KEY",
-      "CF_API_TOKEN",
-      "CF_ZONE_ID",
-      "TS_WEBHOOK_SECRET"
+      "TAILNET", // tailnet 名（如 your-tailnet），用于调 Tailscale API
+      "TAILSCALE_API_KEY", // Tailscale API key，login.tailscale.com/admin/settings/authkeys 创建，读设备列表
+      "CF_API_TOKEN", // Cloudflare API token，需要 Zone.DNS edit 权限
+      "CF_ZONE_ID", // Cloudflare zone id，域名所在 zone
+      "TS_WEBHOOK_SECRET" // Tailscale webhook 签名密钥，admin console 创建 webhook 端点时给出，用于验签
     ]
     // TG_BOT_TOKEN / TG_CHAT_ID 可选（未设置则不发 Telegram 推送）
   }

@@ -1,0 +1,13 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "ts-cf-dns-sync",
+  "main": "src/index.js",
+  "compatibility_date": "2026-01-01",
+  "vars": {
+    // 记录名格式：{PREFIX}{hostname}{POSTFIX}.{DOMAIN}
+    "DOMAIN": "example.com",
+    "PREFIX": "ts-",
+    "POSTFIX": "",
+    "VERIFY_SIGNATURE": "true"
+  }
+}
